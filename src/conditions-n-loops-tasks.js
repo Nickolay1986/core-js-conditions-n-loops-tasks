@@ -474,8 +474,38 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let shuffle = str;
+  let i = 1;
+
+  while (i <= iterations) {
+    let strOne = '';
+    let strTwo = '';
+    let j = 0;
+
+    while (j < str.length) {
+      if (j % 2 === 0) {
+        strOne += shuffle[j];
+      } else {
+        strTwo += shuffle[j];
+      }
+      j += 1;
+    }
+
+    shuffle = strOne + strTwo;
+
+    if (shuffle === str) {
+      const remainingIterations = iterations % i;
+      if (remainingIterations === 0) {
+        return shuffle;
+      }
+      return shuffleChar(str, remainingIterations);
+    }
+
+    i += 1;
+  }
+
+  return shuffle;
 }
 
 /**
@@ -495,8 +525,33 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digitsArray = Array.from(String(number), Number);
+  let lastIndex = digitsArray.length - 1;
+  let smallestBiggerIndex;
+
+  while (lastIndex > 0) {
+    if (digitsArray[lastIndex] > digitsArray[lastIndex - 1]) {
+      smallestBiggerIndex = lastIndex;
+      for (let i = lastIndex + 1; i < digitsArray.length; i += 1) {
+        if (
+          digitsArray[i] > digitsArray[lastIndex - 1] &&
+          digitsArray[i] < digitsArray[smallestBiggerIndex]
+        ) {
+          smallestBiggerIndex = i;
+        }
+      }
+      [digitsArray[lastIndex - 1], digitsArray[smallestBiggerIndex]] = [
+        digitsArray[smallestBiggerIndex],
+        digitsArray[lastIndex - 1],
+      ];
+      const rightPart = digitsArray.splice(lastIndex).sort((a, b) => a - b);
+      return parseInt([...digitsArray, ...rightPart].join(''), 10);
+    }
+    lastIndex -= 1;
+  }
+
+  return number;
 }
 
 module.exports = {
